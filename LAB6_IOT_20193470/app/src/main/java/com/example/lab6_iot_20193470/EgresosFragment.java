@@ -2,7 +2,6 @@ package com.example.lab6_iot_20193470;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -30,67 +27,70 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IngresosFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private List<Ingreso> listaIngresos;
-    private IngresoAdapter adapter;
-    private FirebaseFirestore db;
-    private Map<String, Ingreso> ingresosMap;
+public class EgresosFragment extends Fragment {
 
-    public IngresosFragment() {
+    private RecyclerView recyclerView;
+    private List<Egreso> listaEgresos;
+    private EgresoAdapter adapter;
+    private FirebaseFirestore db;
+    private Map<String, Egreso> egresosMap;
+
+    public EgresosFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_ingresos, container, false);
+        View view = inflater.inflate(R.layout.fragment_egresos, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view_ingresos);
+        recyclerView = view.findViewById(R.id.recycler_view_egresos);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        Button agregarIngreso = view.findViewById(R.id.btn_add_ingreso);
-        agregarIngreso.setOnClickListener(new View.OnClickListener() {
+        Button agregarEgreso = view.findViewById(R.id.btn_add_egreso);
+        agregarEgreso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NuevoIngresoActivity.class);
+                Intent intent = new Intent(getActivity(), NuevoEgresoActivity.class);
                 startActivity(intent);
             }
         });
 
 
-        listaIngresos = new ArrayList<>();
-        ingresosMap = new HashMap<>();
-        adapter = new IngresoAdapter(listaIngresos, new IngresoAdapter.OnItemClickListener() {
+        listaEgresos = new ArrayList<>();
+        egresosMap = new HashMap<>();
+
+        adapter = new EgresoAdapter(listaEgresos, new EgresoAdapter.OnItemClickListener() {
             @Override
-            public void onEditClick(Ingreso ingreso) {
+            public void onEditClick(Egreso egreso) {
 
             }
 
             @Override
-            public void onDeleteClick(Ingreso ingreso) {
-                mostrarDialogoConfirmacion(ingreso);
+            public void onDeleteClick(Egreso egreso) {
+                mostrarDialogoConfirmacion(egreso);
             }
         });
         recyclerView.setAdapter(adapter);
         db = FirebaseFirestore.getInstance();
-        listarIngresos();
+        listarEgresos();
+
 
         return view;
     }
 
-    private void listarIngresos() {
+    private void listarEgresos() {
 
-        db.collection("ingresos")
+        db.collection("egresos")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Ingreso ingreso = document.toObject(Ingreso.class);
+                                Egreso egreso = document.toObject(Egreso.class);
                                 String id = document.getId();
-                                listaIngresos.add(ingreso);
-                                ingresosMap.put(id, ingreso);
+                                listaEgresos.add(egreso);
+                                egresosMap.put(id, egreso);
                             }
                             adapter.notifyDataSetChanged(); // Notificar al adapter que los datos han cambiado
                         } else {
@@ -99,14 +99,14 @@ public class IngresosFragment extends Fragment {
                 });
     }
 
-    private void mostrarDialogoConfirmacion(Ingreso ingreso) {
+    private void mostrarDialogoConfirmacion(Egreso egreso) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Confirmar eliminación");
-        builder.setMessage("¿Estás seguro de querer borrar este ingreso?");
+        builder.setMessage("¿Estás seguro de querer borrar este egreso?");
         builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                borrarIngreso(ingreso);
+                borrarEgreso(egreso);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -118,26 +118,26 @@ public class IngresosFragment extends Fragment {
         builder.create().show();
     }
 
-    private void borrarIngreso(Ingreso ingreso) {
-        String id = obtenerIdIngreso(ingreso);
-        db.collection("ingresos").document(id)
+    private void borrarEgreso(Egreso egreso) {
+        String id = obtenerIdEgreso(egreso);
+        db.collection("egresos").document(id)
                 .delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            listaIngresos.remove(ingreso);
+                            listaEgresos.remove(egreso);
                             adapter.notifyDataSetChanged();
-                            ingresosMap.remove(id);
+                            egresosMap.remove(id);
                         } else {
                         }
                     }
                 });
     }
 
-    private String obtenerIdIngreso(Ingreso ingreso) {
-        for (Map.Entry<String, Ingreso> entry : ingresosMap.entrySet()) {
-            if (entry.getValue().equals(ingreso)) {
+    private String obtenerIdEgreso(Egreso egreso) {
+        for (Map.Entry<String, Egreso> entry : egresosMap.entrySet()) {
+            if (entry.getValue().equals(egreso)) {
                 return entry.getKey();
             }
         }

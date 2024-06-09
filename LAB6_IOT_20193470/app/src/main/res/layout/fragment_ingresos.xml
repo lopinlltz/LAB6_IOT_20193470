@@ -3,19 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <EditText
-        android:id="@+id/ingresoEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ingrese monto"
-        android:inputType="numberDecimal"
-        android:marginVertical="8dp" />
-
+    android:padding="16dp"
+    android:gravity="center_horizontal">
     <Button
-        android:id="@+id/addIngresoButton"
-        android:layout_width="match_parent"
+        android:id="@+id/btn_add_ingreso"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="Añadir Ingreso" />
+        android:text="Agregar ingreso" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_ingresos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

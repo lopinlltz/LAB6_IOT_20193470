@@ -8,6 +8,10 @@ android {
     namespace 'com.example.lab6_iot_20193470'
     compileSdk 34
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "com.example.lab6_iot_20193470"
         minSdk 31
@@ -39,6 +43,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     implementation platform('com.google.firebase:firebase-bom:31.4.0')
     implementation 'com.google.firebase:firebase-firestore'

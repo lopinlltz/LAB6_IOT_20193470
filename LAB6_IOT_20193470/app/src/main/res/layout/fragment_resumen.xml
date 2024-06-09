@@ -9,7 +9,9 @@
         android:id="@+id/resumenTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Resumen de transacciones"
-        android:textSize="18sp"
+        android:background="#DEB8E4"
+        android:text="Resumen de ingresos y egresos"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:padding="16dp" />
 </LinearLayout>
