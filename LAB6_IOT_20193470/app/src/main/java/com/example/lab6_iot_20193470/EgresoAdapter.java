@@ -19,6 +19,7 @@ public class EgresoAdapter extends RecyclerView.Adapter<EgresoAdapter.EgresoView
     public interface OnItemClickListener {
         void onEditClick(Egreso egreso);
         void onDeleteClick(Egreso egreso);
+        void onDetalleClick(Egreso egreso);
     }
 
     public EgresoAdapter(List<Egreso> egresos, OnItemClickListener listener) {
@@ -39,8 +40,9 @@ public class EgresoAdapter extends RecyclerView.Adapter<EgresoAdapter.EgresoView
         holder.titulo.setText(egreso.getTitulo());
         holder.fecha.setText(egreso.getFecha());
         holder.monto.setText(String.valueOf(egreso.getMonto()));
-        holder.editButton.setOnClickListener(v -> listener.onEditClick(egreso));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(egreso));
+        //holder.editButton.setOnClickListener(v -> listener.onEditClick(egreso));
+        //holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(egreso));
+        holder.detalleButton.setOnClickListener(v -> listener.onDetalleClick(egreso));
     }
 
     @Override
@@ -50,15 +52,17 @@ public class EgresoAdapter extends RecyclerView.Adapter<EgresoAdapter.EgresoView
 
     public static class EgresoViewHolder extends RecyclerView.ViewHolder {
         public TextView titulo, fecha, monto;
-        public Button editButton, deleteButton;
+        //public Button editButton, deleteButton;
+        public Button detalleButton;
 
         public EgresoViewHolder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.egreso_titulo);
             fecha = itemView.findViewById(R.id.egreso_fecha);
             monto = itemView.findViewById(R.id.egreso_monto);
-            editButton = itemView.findViewById(R.id.btn_edit_egreso);
-            deleteButton = itemView.findViewById(R.id.btn_delete_egreso);
+            //editButton = itemView.findViewById(R.id.btn_edit_egreso);
+            //deleteButton = itemView.findViewById(R.id.btn_delete_egreso);
+            detalleButton = itemView.findViewById(R.id.btn_detalle_egreso);
         }
     }
 }

@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                                 goToMainActivity();
                             } else {
                                 user.sendEmailVerification().addOnCompleteListener(task2 -> {
-                                    Toast.makeText(LoginActivity.this, "Se le ha enviado un correo para validar su cuenta", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this, "Se ha enviado un correo para verificar su cuenta", Toast.LENGTH_LONG).show();
                                 });
                             }
                         });

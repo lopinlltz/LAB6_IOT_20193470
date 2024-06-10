@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -57,19 +59,26 @@ public class NuevoIngresoActivity extends AppCompatActivity {
         String descripcion = editTextDescripcion.getText().toString();
         String fecha = getCurrentDate();
 
-        Ingreso ingreso = new Ingreso(titulo, monto, descripcion, fecha);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String usuarioId = user.getUid();
+            Ingreso ingreso = new Ingreso(titulo, monto, descripcion, fecha, usuarioId);
 
-        CollectionReference ingresosRef = db.collection("ingresos");
+            CollectionReference ingresosRef = db.collection("ingresos");
 
-        ingresosRef.add(ingreso)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(NuevoIngresoActivity.this, "Ingreso guardado", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(NuevoIngresoActivity.this, "Error al guardar el ingreso", Toast.LENGTH_SHORT).show();
-                    Log.e("Agregar ingreso", "Error al guardar el ingreso", e);
-                });
+            ingresosRef.add(ingreso)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(NuevoIngresoActivity.this, "Ingreso guardado", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(NuevoIngresoActivity.this, "Error al guardar el ingreso", Toast.LENGTH_SHORT).show();
+                        Log.e("Agregar ingreso", "Error al guardar el ingreso", e);
+                    });
+
+        } else {
+        }
     }
 
     private void cancelar() {

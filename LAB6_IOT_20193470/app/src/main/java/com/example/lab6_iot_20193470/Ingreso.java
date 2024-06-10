@@ -5,15 +5,17 @@ public class Ingreso {
     private double monto;
     private String descripcion;
     private String fecha;
+    private String usuarioId;
 
     public Ingreso() {
     }
 
-    public Ingreso(String titulo, double monto, String descripcion, String fecha) {
+    public Ingreso(String titulo, double monto, String descripcion, String fecha, String usuarioId) {
         this.titulo = titulo;
         this.monto = monto;
         this.descripcion = descripcion;
         this.fecha = fecha;
+        this.usuarioId = usuarioId;
     }
 
     public String getTitulo() {
@@ -46,6 +48,14 @@ public class Ingreso {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }
 

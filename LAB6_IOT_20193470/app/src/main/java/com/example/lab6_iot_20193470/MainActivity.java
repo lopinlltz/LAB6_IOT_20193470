@@ -25,7 +25,20 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new IngresosFragment()).commit();
+
+            Intent intent = getIntent();
+            if (intent != null && intent.hasExtra("fragment")) {
+                String fragmentName = intent.getStringExtra("fragment");
+                if ("egresos".equals(fragmentName)) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EgresosFragment()).commit();
+                } else if ("resumen".equals(fragmentName)) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ResumenFragment()).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new IngresosFragment()).commit();
+                }
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new IngresosFragment()).commit();
+            }
         }
     }
 
@@ -41,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         selectedFragment = new EgresosFragment();
                         break;
                     case R.id.navigation_resumen:
-                        //selectedFragment = new ResumenFragment();
+                        selectedFragment = new ResumenFragment();
                         break;
                     case R.id.navigation_logout:
                         FirebaseAuth.getInstance().signOut();

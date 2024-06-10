@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".ResumenFragment">
 
     <TextView
         android:id="@+id/resumenTextView"
@@ -14,4 +16,83 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:padding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <Button
+        android:id="@+id/month_picker_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar mes"
+        android:layout_gravity="center_horizontal"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <TextView
+        android:id="@+id/text_view_ingresos_totales_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingresos totales:"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"/>
+
+    <TextView
+        android:id="@+id/text_view_ingresos_totales"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <TextView
+        android:id="@+id/text_view_egresos_totales_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Egresos totales:"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"/>
+
+    <TextView
+        android:id="@+id/text_view_egresos_totales"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <TextView
+        android:id="@+id/text_view_saldo_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saldo:"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"/>
+
+    <TextView
+        android:id="@+id/text_view_saldo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+
+
 </LinearLayout>

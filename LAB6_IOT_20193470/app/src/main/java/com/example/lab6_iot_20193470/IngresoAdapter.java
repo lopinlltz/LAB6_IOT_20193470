@@ -19,6 +19,7 @@ public class IngresoAdapter extends RecyclerView.Adapter<IngresoAdapter.IngresoV
     public interface OnItemClickListener {
         void onEditClick(Ingreso ingreso);
         void onDeleteClick(Ingreso ingreso);
+        void onDetalleClick(Ingreso ingreso);
     }
 
     public IngresoAdapter(List<Ingreso> ingresos, OnItemClickListener listener) {
@@ -39,8 +40,10 @@ public class IngresoAdapter extends RecyclerView.Adapter<IngresoAdapter.IngresoV
         holder.titulo.setText(ingreso.getTitulo());
         holder.fecha.setText(ingreso.getFecha());
         holder.monto.setText(String.valueOf(ingreso.getMonto()));
-        holder.editButton.setOnClickListener(v -> listener.onEditClick(ingreso));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(ingreso));
+        //holder.editButton.setOnClickListener(v -> listener.onEditClick(ingreso));
+        //holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(ingreso));
+        holder.detalleButton.setOnClickListener(v -> listener.onDetalleClick(ingreso));
+
     }
 
     @Override
@@ -50,15 +53,18 @@ public class IngresoAdapter extends RecyclerView.Adapter<IngresoAdapter.IngresoV
 
     public static class IngresoViewHolder extends RecyclerView.ViewHolder {
         public TextView titulo, fecha, monto;
-        public Button editButton, deleteButton;
+        //public Button editButton, deleteButton;
+        public Button detalleButton;
 
         public IngresoViewHolder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.ingreso_titulo);
             fecha = itemView.findViewById(R.id.ingreso_fecha);
             monto = itemView.findViewById(R.id.ingreso_monto);
-            editButton = itemView.findViewById(R.id.btn_edit_ingreso);
-            deleteButton = itemView.findViewById(R.id.btn_delete_ingreso);
+            //editButton = itemView.findViewById(R.id.btn_edit_ingreso);
+            //deleteButton = itemView.findViewById(R.id.btn_delete_ingreso);
+            detalleButton = itemView.findViewById(R.id.btn_detalle_ingreso);
+
         }
     }
 }

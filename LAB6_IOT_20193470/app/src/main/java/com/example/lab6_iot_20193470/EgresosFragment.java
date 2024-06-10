@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -57,18 +59,27 @@ public class EgresosFragment extends Fragment {
 
 
         listaEgresos = new ArrayList<>();
-        egresosMap = new HashMap<>();
+        egresosMap = new HashMap<>(); // claude para conseguir id autogenerado
 
         adapter = new EgresoAdapter(listaEgresos, new EgresoAdapter.OnItemClickListener() {
             @Override
             public void onEditClick(Egreso egreso) {
 
             }
-
             @Override
             public void onDeleteClick(Egreso egreso) {
-                mostrarDialogoConfirmacion(egreso);
+
             }
+
+            @Override
+            public void onDetalleClick(Egreso egreso) {
+                Intent intent = new Intent(getActivity(), DetalleEgresoActivity.class);
+                intent.putExtra("egresoId", obtenerIdEgreso(egreso));
+                startActivity(intent);
+
+            }
+
+
         });
         recyclerView.setAdapter(adapter);
         db = FirebaseFirestore.getInstance();
@@ -80,59 +91,33 @@ public class EgresosFragment extends Fragment {
 
     private void listarEgresos() {
 
-        db.collection("egresos")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Egreso egreso = document.toObject(Egreso.class);
-                                String id = document.getId();
-                                listaEgresos.add(egreso);
-                                egresosMap.put(id, egreso);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            String userID = user.getUid();
+
+            db.collection("egresos")
+                    .whereEqualTo("usuarioId", userID)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Egreso egreso = document.toObject(Egreso.class);
+                                    String id = document.getId();
+                                    listaEgresos.add(egreso);
+                                    egresosMap.put(id, egreso);
+                                }
+                                adapter.notifyDataSetChanged();
+                            } else {
                             }
-                            adapter.notifyDataSetChanged(); // Notificar al adapter que los datos han cambiado
-                        } else {
                         }
-                    }
-                });
-    }
+                    });
+        } else {
 
-    private void mostrarDialogoConfirmacion(Egreso egreso) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Confirmar eliminación");
-        builder.setMessage("¿Estás seguro de querer borrar este egreso?");
-        builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                borrarEgreso(egreso);
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void borrarEgreso(Egreso egreso) {
-        String id = obtenerIdEgreso(egreso);
-        db.collection("egresos").document(id)
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            listaEgresos.remove(egreso);
-                            adapter.notifyDataSetChanged();
-                            egresosMap.remove(id);
-                        } else {
-                        }
-                    }
-                });
+        }
     }
 
     private String obtenerIdEgreso(Egreso egreso) {

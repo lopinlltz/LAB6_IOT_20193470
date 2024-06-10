@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,7 +70,16 @@ public class IngresosFragment extends Fragment {
 
             @Override
             public void onDeleteClick(Ingreso ingreso) {
-                mostrarDialogoConfirmacion(ingreso);
+
+
+            }
+
+            @Override
+            public void onDetalleClick(Ingreso ingreso) {
+                Intent intent = new Intent(getActivity(), DetalleIngresoActivity.class);
+                intent.putExtra("ingresoId", obtenerIdIngreso(ingreso));
+                startActivity(intent);
+
             }
         });
         recyclerView.setAdapter(adapter);
@@ -80,59 +91,32 @@ public class IngresosFragment extends Fragment {
 
     private void listarIngresos() {
 
-        db.collection("ingresos")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Ingreso ingreso = document.toObject(Ingreso.class);
-                                String id = document.getId();
-                                listaIngresos.add(ingreso);
-                                ingresosMap.put(id, ingreso);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String userID = user.getUid();
+
+            db.collection("ingresos")
+                    .whereEqualTo("usuarioId", userID)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Ingreso ingreso = document.toObject(Ingreso.class);
+                                    String id = document.getId();
+                                    listaIngresos.add(ingreso);
+                                    ingresosMap.put(id, ingreso);
+                                }
+                                adapter.notifyDataSetChanged();
+                            } else {
                             }
-                            adapter.notifyDataSetChanged(); // Notificar al adapter que los datos han cambiado
-                        } else {
                         }
-                    }
-                });
-    }
+                    });
+        } else {
 
-    private void mostrarDialogoConfirmacion(Ingreso ingreso) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Confirmar eliminación");
-        builder.setMessage("¿Estás seguro de querer borrar este ingreso?");
-        builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                borrarIngreso(ingreso);
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    private void borrarIngreso(Ingreso ingreso) {
-        String id = obtenerIdIngreso(ingreso);
-        db.collection("ingresos").document(id)
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            listaIngresos.remove(ingreso);
-                            adapter.notifyDataSetChanged();
-                            ingresosMap.remove(id);
-                        } else {
-                        }
-                    }
-                });
+        }
     }
 
     private String obtenerIdIngreso(Ingreso ingreso) {

@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -57,19 +59,28 @@ public class NuevoEgresoActivity extends AppCompatActivity {
         String descripcion = editTextDescripcion.getText().toString();
         String fecha = getCurrentDate();
 
-        Egreso egreso = new Egreso(titulo, monto, descripcion, fecha);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
 
-        CollectionReference egresosRef = db.collection("egresos");
+        if (user != null) {
+            String usuarioId = user.getUid();
 
-        egresosRef.add(egreso)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(NuevoEgresoActivity.this, "Egreso guardado", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(NuevoEgresoActivity.this, "Error al guardar el egreso", Toast.LENGTH_SHORT).show();
-                    Log.e("Agregar egreso", "Error al guardar el egreso", e);
-                });
+            Egreso egreso = new Egreso(titulo, monto, descripcion, fecha, usuarioId);
+
+            CollectionReference egresosRef = db.collection("egresos");
+
+            egresosRef.add(egreso)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(NuevoEgresoActivity.this, "Egreso guardado", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(NuevoEgresoActivity.this, "Error al guardar el egreso", Toast.LENGTH_SHORT).show();
+                        Log.e("Agregar egreso", "Error al guardar el egreso", e);
+                    });
+
+        } else {
+        }
     }
 
     private void cancelar() {
